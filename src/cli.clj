@@ -1,9 +1,11 @@
 (ns cli
   (:require [clojure.string :as s]
             [rosalind-dna :as dna]
-            [rosalind-rna :as rna]))
+            [rosalind-rna :as rna]
+            [rosalind-num :as rnum]))
 
-(declare single-line is-dna)
+(declare single-line single-line-parts is-dna)
+(declare map-to-int)
 
 (defmacro as-error
   [& blocks]
@@ -25,6 +27,13 @@
       :normalizer dna/normalize
       :function dna/reverse-complement
       :parser (fn [a] (single-line a))}}}
+   "num"
+   {:description "general number functions"
+    :commands
+    {"fib-rabbits" {:description "calculate the rabbits from the fib problem"
+                    :normalizer (fn [l] (map-to-int l))
+                    :function (fn [args] (apply rnum/fib-rabbits args))
+                    :parser (fn [a] (single-line-parts a))}}}
    "rna"
    {:description "commands related to RNA"
     :commands
@@ -97,3 +106,11 @@
     (read-line)
     (with-open [rdr (clojure.java.io/reader (first args))]
       (first (line-seq rdr)))))
+
+(defn single-line-parts
+  [args]
+  (clojure.string/split (single-line args) #"\s+"))
+
+(defn map-to-int
+  [l]
+  (map Integer/parseInt l))
