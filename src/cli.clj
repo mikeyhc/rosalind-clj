@@ -1,6 +1,7 @@
 (ns cli
   (:require [clojure.string :as s]
-            [rosalind-dna :as dna]))
+            [rosalind-dna :as dna]
+            [rosalind-rna :as rna]))
 
 (declare single-line is-dna)
 
@@ -19,7 +20,14 @@
               :parser (fn [a] (single-line a))
               :formatter (fn [{a :A c :C g :G t :T}] (println a c g t))
               }}}
-   })
+   "rna"
+   {:description "commands related to RNA"
+    :commands
+    {"from-dna" {:description "convert a DNA string to an RNA string"
+                 :normalizer dna/normalize
+                 :function rna/dna->rna
+                 :parser (fn [a] (single-line a))
+                 }}}})
 
 (def usage-header
   "usage: rosalind {group} {command} ARGS\n")
