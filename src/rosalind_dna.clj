@@ -5,6 +5,14 @@
   [c]
   (or (= c \A) (= c \C) (= c \G) (= c \T)))
 
+(defn nucleotide-complement
+  [c]
+  (case c
+    \A \T
+    \C \G
+    \G \C
+    \T \A))
+
 (defn normalize
   "Normalize a string to a standard DNA format, returns nil if the string contains
   non-DNA characters"
@@ -28,3 +36,9 @@
               (throw (ex-info "not a DNA string" {:input dna}))))
           {:A 0 :C 0 :G 0 :T 0}
           dna))
+
+(defn reverse-complement
+  [dna]
+  "Create the reverse complement of a DNA string, swapping A/T and C/G and reversing
+  the string"
+  (apply str (reverse (map nucleotide-complement dna))))

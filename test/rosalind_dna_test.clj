@@ -17,3 +17,9 @@
                           (dna/count-nucleotides "ACGTX")))
     (is (= {:A 20 :C 12 :G 17 :T 21}
            (dna/count-nucleotides "AGCTTTTCATTCTGACTGCAACGGGCAATATGTCTCTGTGTGGATTAAAAAAAGAGTGTCTGATAGCAGC")))))
+
+(deftest reverse-complement
+  (testing "reverse complement produces the correct string"
+    (is (= "" (dna/reverse-complement "")))
+    (is (= "ACGT" (dna/reverse-complement "ACGT")))
+    (is (= "ACCGGGTTTT" (dna/reverse-complement "AAAACCCGGT")))))

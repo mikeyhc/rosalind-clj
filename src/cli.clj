@@ -19,7 +19,12 @@
               :function dna/count-nucleotides
               :parser (fn [a] (single-line a))
               :formatter (fn [{a :A c :C g :G t :T}] (println a c g t))
-              }}}
+              }
+     "reverse-complement"
+     {:description "generate the reverse complement for a dna string"
+      :normalizer dna/normalize
+      :function dna/reverse-complement
+      :parser (fn [a] (single-line a))}}}
    "rna"
    {:description "commands related to RNA"
     :commands
