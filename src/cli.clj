@@ -1,10 +1,11 @@
 (ns cli
   (:require [clojure.string :as s]
             [rosalind-dna :as dna]
+            [rosalind-cli.dna-commands :as dna-cmds]
+            [rosalind-cli.utility :as util]
             [rosalind-rna :as rna]
             [rosalind-num :as rnum]))
 
-(declare single-line single-line-parts is-dna)
 (declare map-to-int)
 
 (defmacro as-error
@@ -13,34 +14,21 @@
      ~@blocks))
 
 (def commands
-  {"dna"
-   {:description "commands related to DNA"
-    :commands
-    {"count" {:description "count the nucleotides in the provided DNA\n"
-              :normalizer dna/normalize
-              :function dna/count-nucleotides
-              :parser (fn [a] (single-line a))
-              :formatter (fn [{a :A c :C g :G t :T}] (println a c g t))
-              }
-     "reverse-complement"
-     {:description "generate the reverse complement for a dna string"
-      :normalizer dna/normalize
-      :function dna/reverse-complement
-      :parser (fn [a] (single-line a))}}}
+  {"dna" dna-cmds/commands
    "num"
    {:description "general number functions"
     :commands
     {"fib-rabbits" {:description "calculate the rabbits from the fib problem"
                     :normalizer (fn [l] (map-to-int l))
                     :function (fn [args] (apply rnum/fib-rabbits args))
-                    :parser (fn [a] (single-line-parts a))}}}
+                    :parser util/single-line-parts}}}
    "rna"
    {:description "commands related to RNA"
     :commands
     {"from-dna" {:description "convert a DNA string to an RNA string"
                  :normalizer dna/normalize
                  :function rna/dna->rna
-                 :parser (fn [a] (single-line a))
+                 :parser util/single-line
                  }}}})
 
 (def usage-header
@@ -99,17 +87,6 @@
       (usage))))
 
 ;; helpers
-
-(defn single-line
-  [args]
-  (if (= (count args) 0)
-    (read-line)
-    (with-open [rdr (clojure.java.io/reader (first args))]
-      (first (line-seq rdr)))))
-
-(defn single-line-parts
-  [args]
-  (clojure.string/split (single-line args) #"\s+"))
 
 (defn map-to-int
   [l]

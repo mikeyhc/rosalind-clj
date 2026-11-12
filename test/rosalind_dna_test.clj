@@ -1,6 +1,7 @@
 (ns rosalind-dna-test
   (:require [clojure.test :refer [deftest is testing]]
-            [rosalind-dna :as dna]))
+            [rosalind-dna :as dna]
+            [rosalind-testing :as rt]))
 
 (deftest normalize-dna
   (testing "normalizes a DNA string correctly"
@@ -23,3 +24,10 @@
     (is (= "" (dna/reverse-complement "")))
     (is (= "ACGT" (dna/reverse-complement "ACGT")))
     (is (= "ACCGGGTTTT" (dna/reverse-complement "AAAACCCGGT")))))
+
+(deftest gc-content
+  (testing "test that GC content produces correct values"
+    (is (rt/within-bounds 0.0 (dna/gc-content "ATAT")))
+    (is (rt/within-bounds 100.0 (dna/gc-content "GCGC")))
+    (is (rt/within-bounds 50.0 (dna/gc-content "ATGC")))
+    (is (rt/within-bounds 60.91954 (dna/gc-content "CCACCCTCGTGGTATGGCTAGGCATTCAGGAACCGGAGAACGCTTCAGACCAGCCCGGACTGGGAACCTGCGGGCAGTAGGTGGAAT")))))

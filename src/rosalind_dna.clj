@@ -42,3 +42,8 @@
   "Create the reverse complement of a DNA string, swapping A/T and C/G and reversing
   the string"
   (apply str (reverse (map nucleotide-complement dna))))
+
+(defn gc-content
+  "Returns the GC content of a DNA string (the % of GC nucleotides in the string)"
+  [dna]
+  (float (* (/ (count (filter #(or (= \C %1) (= \G %1)) dna)) (count dna)) 100)))
