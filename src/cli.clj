@@ -2,6 +2,7 @@
   (:require [clojure.string :as s]
             [rosalind-dna :as dna]
             [rosalind-cli.dna-commands :as dna-cmds]
+            [rosalind-cli.protein-commands :as protein-cmds]
             [rosalind-cli.num-commands :as num-cmds]
             [rosalind-cli.utility :as util]
             [rosalind-rna :as rna]))
@@ -16,6 +17,7 @@
 (def commands
   {"dna" dna-cmds/commands
    "num" num-cmds/commands
+   "protein" protein-cmds/commands
    "rna"
    {:description "commands related to RNA"
     :commands

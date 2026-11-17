@@ -7,3 +7,10 @@
     (is (= "" (rna/dna->rna "")))
     (is (= "ACGU" (rna/dna->rna "ACGT")))
     (is (= "GAUGGAACUUGACUACGUAAAUU" (rna/dna->rna "GATGGAACTTGACTACGTAAATT")))))
+
+(deftest normalize-rna
+  (testing "normalizes an RNA string correctly"
+    (is (= "ACGU" (rna/normalize "acgu")))
+    (is (= "ACGU" (rna/normalize "aCgU")))
+    (is (= "ACGU" (rna/normalize "ACGU")))
+    (is (= nil (rna/normalize "not rna")))))
