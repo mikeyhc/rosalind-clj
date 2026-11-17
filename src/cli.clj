@@ -2,11 +2,11 @@
   (:require [clojure.string :as s]
             [rosalind-dna :as dna]
             [rosalind-cli.dna-commands :as dna-cmds]
+            [rosalind-cli.num-commands :as num-cmds]
             [rosalind-cli.utility :as util]
-            [rosalind-rna :as rna]
-            [rosalind-num :as rnum]))
+            [rosalind-rna :as rna]))
 
-(declare map-to-int stringify)
+(declare stringify)
 
 (defmacro as-error
   [& blocks]
@@ -15,13 +15,7 @@
 
 (def commands
   {"dna" dna-cmds/commands
-   "num"
-   {:description "general number functions"
-    :commands
-    {"fib-rabbits" {:description "calculate the rabbits from the fib problem"
-                    :normalizer (fn [l] (map-to-int l))
-                    :function (fn [args] (apply rnum/fib-rabbits args))
-                    :parser util/single-line-parts}}}
+   "num" num-cmds/commands
    "rna"
    {:description "commands related to RNA"
     :commands
@@ -92,10 +86,6 @@
     (exit-usage (str "unknown group: \"" (first args) "\""))))
 
 ;; helpers
-(defn map-to-int
-  [l]
-  (map Integer/parseInt l))
-
 (defn stringify
   [args]
   (if (seq? args)
