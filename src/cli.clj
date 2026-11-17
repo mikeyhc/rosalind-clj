@@ -6,7 +6,7 @@
             [rosalind-rna :as rna]
             [rosalind-num :as rnum]))
 
-(declare map-to-int)
+(declare map-to-int stringify)
 
 (defmacro as-error
   [& blocks]
@@ -42,14 +42,12 @@
        
 (def command-usage
   (->> commands
-       (reduce (fn [acc [name {cmds :commands}]]
-                 (reduce (fn [acc0 [n {d :description}]]
-                           (cons (str "  " n ": " d) acc0))
-                         (cons (str name " commands:") acc)
-                         cmds))
-               '())
-       (reverse)
-       (s/join "\n")))
+       (map (fn [[name {cmds :commands}]]
+              (s/join "\n" (cons (str name" commands:")
+                                 (sort
+                                  (map (fn [[n {d :description}]] (str "  " n ": " d))
+                                       cmds))))))
+       (s/join "\n\n")))
 
 (defn usage
   "Helpful usage information!"
@@ -61,14 +59,24 @@
                command-usage
                "\n")))
 
-(defn -main [& args]
-  (if (or (and (= (count args) 1) (= (first args) "help"))
-          (< (count args) 2))
+(defn exit-usage
+  [& message]
+  (if (= (count message) 0)
+    (do
+      (usage)
+      (System/exit 0))
     (do
       (as-error
-       (println "error: group and command required")
-       (usage))
-      (System/exit (if (= (count args) 1) 0 1))))
+       (println (s/join " " (cons "error:" message)))
+       (usage)
+       (System/exit 1)))))
+
+(defn -main
+  [& args]
+  (cond
+    (< (count args) 1) (exit-usage "group required")
+    (= (first args) "help") (exit-usage)
+    (< (count args) 2) (exit-usage "command required"))
   (if-let [group (get commands (s/lower-case (first args)))]
     (if-let [command (get (get group :commands) (s/lower-case (second args)))]
       (let [{parser :parser function :function} command
@@ -78,16 +86,18 @@
         (if-let [input (normalizer maybe-input)]
           (formatter (function input))
           (as-error
-           (println (str "invalid input: \"" maybe-input "\"")))))
-      (as-error
-       (println (str "unknown command: \"" (second args) "\""))
-       (usage)))
-    (as-error
-      (println (str "unknown group: \"" (first args) "\""))
-      (usage))))
+           (println (str "invalid input: \"" (stringify maybe-input) "\""))
+           (System/exit 1))))
+      (exit-usage (str"unknown command: \"" (second args) "\"")))
+    (exit-usage (str "unknown group: \"" (first args) "\""))))
 
 ;; helpers
-
 (defn map-to-int
   [l]
   (map Integer/parseInt l))
+
+(defn stringify
+  [args]
+  (if (seq? args)
+    (clojure.string/join " " args)
+    (str args)))

@@ -16,7 +16,7 @@
 (def commands
   {:description "commands related to DNA"
    :commands
-   {"count" {:description "count the nucleotides in the provided DNA\n"
+   {"count" {:description "count the nucleotides in the provided DNA"
              :normalizer dna/normalize
              :function dna/count-nucleotides
              :parser util/single-line
@@ -35,4 +35,14 @@
      :parser util/fasta
      :formatter (fn [{:keys [id sequence]}] (println id) (println (dna/gc-content sequence)))
      }
+    "point-mutations"
+    {:description "count the point mutations between 2 DNA strings"
+     :normalizer (fn [args]
+                   (if (= (count args) 2)
+                     (let [dna-a (dna/normalize (first args))
+                           dna-b (dna/normalize (second args))]
+                       (and dna-a dna-b [dna-a dna-b]))
+                     nil))
+     :function (fn [[dna-a dna-b]] (dna/point-mutations dna-a dna-b))
+     :parser util/lines}     
     }})

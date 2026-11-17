@@ -31,3 +31,10 @@
     (is (rt/within-bounds 100.0 (dna/gc-content "GCGC")))
     (is (rt/within-bounds 50.0 (dna/gc-content "ATGC")))
     (is (rt/within-bounds 60.91954 (dna/gc-content "CCACCCTCGTGGTATGGCTAGGCATTCAGGAACCGGAGAACGCTTCAGACCAGCCCGGACTGGGAACCTGCGGGCAGTAGGTGGAAT")))))
+
+(deftest point-mutations
+  (testing "test that point mutations are correct"
+    (is (= 0 (dna/point-mutations "" "")))
+    (is (= 1 (dna/point-mutations "A" "T")))
+    (is (= 2 (dna/point-mutations "AT" "TA")))
+    (is (= 7 (dna/point-mutations "GAGCCTACTAACGGGAT" "CATCGTAATGACGGCCT")))))

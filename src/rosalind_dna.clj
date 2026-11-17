@@ -47,3 +47,11 @@
   "Returns the GC content of a DNA string (the % of GC nucleotides in the string)"
   [dna]
   (float (* (/ (count (filter #(or (= \C %1) (= \G %1)) dna)) (count dna)) 100)))
+
+(defn point-mutations
+  "Returns the count of point mutations between 2 DNA strings"
+  [dna-a dna-b]
+  (reduce
+   (fn [acc [a b]] (if (= a b) acc (inc acc)))
+   0
+   (map vector dna-a dna-b)))
